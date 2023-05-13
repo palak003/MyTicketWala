@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/base-domains/base-domains.iml" filepath="$PROJECT_DIR$/base-domains/base-domains.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/book_my_show.iml" filepath="$PROJECT_DIR$/.idea/book_my_show.iml" />
+      <module fileurl="file://$PROJECT_DIR$/booking-service/booking-service.iml" filepath="$PROJECT_DIR$/booking-service/booking-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mock-payment-service/mock-payment-service.iml" filepath="$PROJECT_DIR$/mock-payment-service/mock-payment-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/admin-service/movie-service.iml" filepath="$PROJECT_DIR$/admin-service/movie-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/notifications-service/notifications-service.iml" filepath="$PROJECT_DIR$/notifications-service/notifications-service.iml" />
+    </modules>
+  </component>
+</project>
