@@ -22,6 +22,7 @@ public class Movie {
     @Column(name = "movie_name")
     private String movieName;
 
-    
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Show> shows;
 
 }
