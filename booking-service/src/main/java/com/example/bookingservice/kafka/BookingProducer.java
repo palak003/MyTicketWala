@@ -23,12 +23,8 @@ public class BookingProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendReservedMessage(Booking booking) {
-        LOGGER.info(String.format("Seat reserved=?%s",booking.getSeat().toString()));
-        Message<Booking> message= MessageBuilder.withPayload(booking).setHeader(KafkaHeaders.TOPIC,topic.name()).build();
-        kafkaTemplate.send(message);
-    }
- /*   @KafkaListener(topics="${spring.kafka.topic1.name}",groupId="${spring.kafka.consumer.group-id}")
+   
+  @KafkaListener(topics="${spring.kafka.topic1.name}",groupId="${spring.kafka.consumer.group-id}")
     public void consume(SeatEvent seatEvent){
         LOGGER.info(String.format("Payment is=?%s",seatEvent));
         if(Objects.equals(seatEvent.getMessage(), "success")){
