@@ -62,7 +62,17 @@ public class BookingConsumer {
         paymentMethod(booking);
 
     }
-    private void paymentMethod(Booking booking) throws 
+    private void paymentMethod(Booking booking) throws RazorpayException, JSONException{
+        boolean result=razorpayPayment(booking);
+        booking.setPaymentStatus(result);
+        bookingRepository.save(booking);
+        if(result){
+            booking.getSeat().setStatus(BookingStatus.BOOKED);
+            bookingRepository.save(booking);
+            stopBgThread(booking.getSeat().getId());
+        }
+        Message<Booking> message= MessageBuilder.withPayload(booking).setHeader(KafkaHeaders.TOPIC,topic.name()).build();
+        kafkaTemplate.send(message);
     }
 
     private void startBgThread(Booking booking) {
@@ -75,6 +85,18 @@ public class BookingConsumer {
         scheduledTasks.put(booking.getSeat().getId(), scheduledFuture);
     }
 
-   
+    private boolean razorpayPayment(Booking booking) throws JSONException{
+
+    }
+
+    private void stopBgThread(Long id) {
+        ScheduledFuture<?> scheduledFuture = scheduledTasks.get(id);
+        if (scheduledFuture != null) {
+            boolean cancelled = scheduledFuture.cancel(true);
+            if (cancelled) {
+                scheduledTasks.remove(id);
+            }
+        }
+    }
 
 }
