@@ -55,6 +55,11 @@ public class BookingConsumer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @PostMapping("/rePayment")
+    public void rePayment(@RequestBody Booking booking) throws RazorpayException, JSONException {
+        paymentMethod(booking);
+    }
+
     @KafkaListener(topics="${spring.kafka.topic.name}",groupId="${spring.kafka.consumer.group-id}")
     public void consume(@Payload Booking booking) throws RazorpayException, JSONException {
         LOGGER.info(String.format("Proceed the payment for the seat=> %s", booking.toString()));
@@ -86,6 +91,22 @@ public class BookingConsumer {
     }
 
     private boolean razorpayPayment(Booking booking) throws JSONException{
+        List<Booking> bookingList=booking.getUser().getBookings();
+        double totalAmount = 0.0;
+        for (Booking b : bookingList) {
+            totalAmount+=priceRepository.findByShowIdAndSeatTypeId(b.getShow().getShowId(),b.getSeat().getSeatType().getSeatTypeId()).getPrice();
+        }
+        JSONObject options = new JSONObject();
+        options.put("amount", totalAmount * 100);
+        options.put("currency", "INR");
+        options.put("receipt", booking.getId());
+        RazorpayOrder order = razorpayClient.Orders.create(options);
+        String paymentId = order.get("id");
+        Payment payment = razorpayClient.Payments.fetch(paymentId);
+        int paymentAmount = payment.get("amount");
+        String paymentCurrency = payment.get("currency");
+        return paymentAmount == totalAmount * 100 && paymentCurrency.equalsIgnoreCase("INR");
+        return false;
 
     }
 
