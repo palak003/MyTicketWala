@@ -3,9 +3,7 @@ package com.example.bookingservice.controller;
 import com.example.bookingservice.kafka.BookingProducer;
 import com.example.movieservice.entities.Booking;
 import com.example.movieservice.entities.BookingStatus;
-import com.example.movieservice.entities.Seat;
 import com.example.movieservice.repository.BookingRepository;
-import com.example.movieservice.repository.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +17,7 @@ public class BookingController {
     private  BookingProducer bookingProducer;
     @Autowired
     private BookingRepository bookingRepository;
-    @Autowired
-    private SeatRepository seatRepository;
+
 
     public BookingController(BookingProducer bookingProducer) {
         this.bookingProducer = bookingProducer;
@@ -28,9 +25,7 @@ public class BookingController {
 
     @PostMapping("/reserveSeat")
     public ResponseEntity<String> reserveSeat(@RequestBody Booking booking){
-            Seat seat=booking.getSeat();
-            seat.setStatus(BookingStatus.RESERVED);
-            seatRepository.save(seat);
+            booking.getSeat().setStatus(BookingStatus.RESERVED);
             bookingRepository.save(booking);
             bookingProducer.sendReservedMessage(booking);
         return new ResponseEntity<>("Booking is being processed..", HttpStatus.OK);
